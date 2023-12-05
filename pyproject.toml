@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "sample"
+name = "Telegram_Bot"
 version = "0.1.0"
-description = "Template for future projects"
+description = "My telegram bot for a volleyball group"
 authors = ["AlnurT <alnur.tazhbenov@mail.ru>"]
 
 [tool.poetry.dependencies]
-python = "~3.11"
+python = "^3.11"
 pre-commit = "^3.5.0"
 black = "^23.11.0"
 isort = "^5.12.0"
