@@ -19,6 +19,7 @@ flake8-mutable = "^1.2.0"
 flake8-print = "^5.0.0"
 flake8-return = "^1.2.0"
 pep8-naming = "^0.13.3"
+aiogram = "^3.2.0"
 
 [tool.black]
 include = '\.pyi?$'
