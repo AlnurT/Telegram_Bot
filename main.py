@@ -1,7 +1,35 @@
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f"Hi, {name}")  # Press Ctrl+F8 to toggle the breakpoint.
+import asyncio
+import logging
+import sys
+
+from aiogram import Bot, Dispatcher
+from aiogram.enums import ParseMode
+from aiogram.filters import CommandStart
+from aiogram.types import Message
+from aiogram.utils.markdown import hbold
+
+TOKEN = "TOKEN"
+dp = Dispatcher()
+
+
+@dp.message(CommandStart())
+async def command_start_handler(message: Message) -> None:
+    await message.answer(f"Привет, {hbold(message.from_user.first_name)}!")
+
+
+@dp.message()
+async def echo_handler(message: Message) -> None:
+    try:
+        await message.send_copy(chat_id=message.chat.id)
+    except TypeError:
+        await message.answer("Nice try!")
+
+
+async def main() -> None:
+    bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
+    await dp.start_polling(bot)
 
 
 if __name__ == "__main__":
-    print_hi("PyCharm")
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    asyncio.run(main())

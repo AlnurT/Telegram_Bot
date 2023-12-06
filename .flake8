@@ -11,6 +11,8 @@ ignore =
     D107,
     # Print found
     T201,
+    # Possible hardcoded password
+    S105,
 
 
 per-file-ignores =
