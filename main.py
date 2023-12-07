@@ -2,10 +2,11 @@ import asyncio
 import logging
 import sys
 
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, F
 from aiogram.enums import ParseMode
+from aiogram.filters import CommandStart
 
-from core.handlers.basic import command_start
+from core.handlers.basic import command_start, get_photo
 from core.settings import settings
 
 
@@ -24,7 +25,9 @@ async def main():
     dp = Dispatcher()
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
-    dp.message.register(command_start)
+    dp.message.register(get_photo, F.photo)
+    # dp.message.register(get_hello, F.text == "Привет")
+    dp.message.register(command_start, CommandStart)
 
     try:
         await dp.start_polling(bot)
