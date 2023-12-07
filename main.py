@@ -9,10 +9,21 @@ from core.handlers.basic import command_start
 from core.settings import settings
 
 
-async def main() -> None:
+async def start_bot(bot: Bot):
+    await bot.send_message(836876955, text="Бот запущен!")
+
+
+async def stop_bot(bot: Bot):
+    await bot.send_message(836876955, text="Бот остановлен!")
+
+
+async def main():
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     bot = Bot(settings.bots.bot_token, parse_mode=ParseMode.HTML)
+
     dp = Dispatcher()
+    dp.startup.register(start_bot)
+    dp.shutdown.register(stop_bot)
     dp.message.register(command_start)
 
     try:
