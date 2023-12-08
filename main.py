@@ -6,7 +6,9 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 
-from core.handlers.basic import command_start, get_photo
+from core.filters.iscontact import IsTrueContact
+from core.handlers.basic import command_start, get_hello, get_photo
+from core.handlers.contact import get_fake_contact, get_true_contact
 from core.settings import settings
 
 
@@ -26,8 +28,10 @@ async def main():
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
     dp.message.register(get_photo, F.photo)
-    # dp.message.register(get_hello, F.text == "Привет")
-    dp.message.register(command_start, CommandStart)
+    dp.message.register(get_hello, F.text == "Привет")
+    dp.message.register(get_true_contact, F.contact, IsTrueContact())
+    dp.message.register(get_fake_contact, F.contact)
+    dp.message.register(command_start, CommandStart())
 
     try:
         await dp.start_polling(bot)

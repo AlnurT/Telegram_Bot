@@ -11,3 +11,7 @@ async def get_photo(message: Message, bot: Bot):
     await message.answer("Картинка отправлена!")
     file = await bot.get_file(message.photo[-1].file_id)
     await bot.download_file(file.file_path, "photo.jpg")
+
+
+async def get_hello(message: Message):
+    await message.answer("И тебе привет!")
