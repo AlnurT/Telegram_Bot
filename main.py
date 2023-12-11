@@ -10,9 +10,11 @@ from core.filters.iscontact import IsTrueContact
 from core.handlers.basic import command_start, get_hello, get_photo
 from core.handlers.contact import get_fake_contact, get_true_contact
 from core.settings import settings
+from core.utils.commands import set_commands
 
 
 async def start_bot(bot: Bot):
+    await set_commands(bot)
     await bot.send_message(836876955, text="Бот запущен!")
 
 
