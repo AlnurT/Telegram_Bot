@@ -2,9 +2,21 @@ from aiogram import Bot
 from aiogram.types import Message
 from aiogram.utils.markdown import hbold
 
+from core.keyboards.reply import get_reply_keyboard
+
 
 async def command_start(message: Message):
-    await message.answer(f"Привет, {hbold(message.from_user.first_name)}!")
+    await message.answer(
+        f"Привет, {hbold(message.from_user.first_name)}!",
+        reply_markup=get_reply_keyboard(),
+    )
+
+
+async def get_location(message: Message):
+    await message.answer(
+        f"Ты отправил локацию!\r\a"
+        f"{message.location.latitude}\r\a{message.location.longitude}"
+    )
 
 
 async def get_photo(message: Message, bot: Bot):
