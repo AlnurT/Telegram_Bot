@@ -2,7 +2,15 @@ from aiogram import Bot
 from aiogram.types import Message
 from aiogram.utils.markdown import hbold
 
+from core.keyboards.inline import get_inline_keyboard
 from core.keyboards.reply import get_reply_keyboard
+
+
+async def get_inline(message: Message):
+    await message.answer(
+        f"Привет, {message.from_user.first_name}. Показываю инлайн кнопки!",
+        reply_markup=get_inline_keyboard(),
+    )
 
 
 async def command_start(message: Message):

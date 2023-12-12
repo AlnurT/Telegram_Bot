@@ -16,7 +16,7 @@ def get_reply_keyboard():
     keyboard_builder.adjust(3, 2, 1)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
-        one_time_keyboard=False,
+        one_time_keyboard=True,
         input_field_placeholder="Отправь локацию, номер телефона или создай викторину / опрос",
         selective=True,
     )
