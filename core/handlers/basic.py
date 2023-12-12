@@ -13,7 +13,8 @@ async def get_inline(message: Message):
     )
 
 
-async def command_start(message: Message):
+async def command_start(message: Message, counter: str):
+    await message.answer(f"Сообщение #{counter}")
     await message.answer(
         f"Привет, {hbold(message.from_user.first_name)}!",
         reply_markup=get_reply_keyboard(),

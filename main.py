@@ -16,6 +16,8 @@ from core.handlers.basic import (
 )
 from core.handlers.callback import select_macbook
 from core.handlers.contact import get_fake_contact, get_true_contact
+from core.middlewares.countermiddleware import CounterMiddleware
+from core.middlewares.officehours import OfficeHoursMiddleware
 from core.settings import settings
 from core.utils.commands import set_commands
 
@@ -34,6 +36,8 @@ async def main():
     bot = Bot(settings.bots.bot_token, parse_mode=ParseMode.HTML)
 
     dp = Dispatcher()
+    dp.message.middleware.register(CounterMiddleware())
+    dp.message.middleware.register(OfficeHoursMiddleware())
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
     dp.message.register(get_location, F.location)

@@ -13,6 +13,8 @@ ignore =
     T201,
     # Possible hardcoded password
     S105,
+    # Missing explicit return at the end of function able to return non-None value
+    R503,
 
 
 per-file-ignores =
