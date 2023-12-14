@@ -3,7 +3,9 @@ from aiogram.types import Message
 from aiogram.utils.markdown import hbold
 
 from core.keyboards.inline import get_inline_keyboard
-from core.keyboards.reply import get_reply_keyboard
+
+# from core.keyboards.reply import get_reply_keyboard
+from core.utils.dbconnect import Request
 
 
 async def get_inline(message: Message):
@@ -13,12 +15,10 @@ async def get_inline(message: Message):
     )
 
 
-async def command_start(message: Message, counter: str):
+async def command_start(message: Message, counter: str, request: Request):
+    await request.add_data(message.from_user.id, message.from_user.first_name)
     await message.answer(f"Сообщение #{counter}")
-    await message.answer(
-        f"Привет, {hbold(message.from_user.first_name)}!",
-        reply_markup=get_reply_keyboard(),
-    )
+    await message.answer(f"Привет, {hbold(message.from_user.first_name)}!")
 
 
 async def get_location(message: Message):

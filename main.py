@@ -2,6 +2,7 @@ import asyncio
 import logging
 import sys
 
+import asyncpg
 from aiogram import Bot, Dispatcher, F
 from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandStart
@@ -17,6 +18,7 @@ from core.handlers.basic import (
 from core.handlers.callback import select_macbook
 from core.handlers.contact import get_fake_contact, get_true_contact
 from core.middlewares.countermiddleware import CounterMiddleware
+from core.middlewares.dbmiddleware import DbSession
 from core.middlewares.officehours import OfficeHoursMiddleware
 from core.settings import settings
 from core.utils.commands import set_commands
@@ -31,13 +33,26 @@ async def stop_bot(bot: Bot):
     await bot.send_message(836876955, text="Бот остановлен!")
 
 
+async def create_pool():
+    return await asyncpg.create_pool(
+        user="postgres",
+        password=settings.password.db_password,
+        database="users",
+        host="127.0.0.1",
+        port=5432,
+        command_timeout=60,
+    )
+
+
 async def main():
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     bot = Bot(settings.bots.bot_token, parse_mode=ParseMode.HTML)
 
+    pool_connect = await create_pool()
     dp = Dispatcher()
     dp.message.middleware.register(CounterMiddleware())
     dp.message.middleware.register(OfficeHoursMiddleware())
+    dp.update.middleware.register(DbSession(pool_connect))
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
     dp.message.register(get_location, F.location)
