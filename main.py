@@ -8,6 +8,7 @@ from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandStart
 
 from core.filters.iscontact import IsTrueContact
+from core.handlers import form
 from core.handlers.basic import (
     command_start,
     get_hello,
@@ -22,6 +23,7 @@ from core.middlewares.dbmiddleware import DbSession
 from core.middlewares.officehours import OfficeHoursMiddleware
 from core.settings import settings
 from core.utils.commands import set_commands
+from core.utils.statesform import StepsForm
 
 
 async def start_bot(bot: Bot):
@@ -55,6 +57,10 @@ async def main():
     dp.update.middleware.register(DbSession(pool_connect))
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
+    dp.message.register(form.get_form, Command(commands="form"))
+    dp.message.register(form.get_name, StepsForm.GET_NAME)
+    dp.message.register(form.get_last_name, StepsForm.GET_LAST_NAME)
+    dp.message.register(form.get_age, StepsForm.GET_AGE)
     dp.message.register(get_location, F.location)
     dp.message.register(get_inline, Command("inline"))
     dp.callback_query.register(select_macbook, F.data)
