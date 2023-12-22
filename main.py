@@ -1,14 +1,16 @@
 import asyncio
 import logging
 import sys
+from datetime import datetime, timedelta
 
 import asyncpg
 from aiogram import Bot, Dispatcher, F
 from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandStart
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from core.filters.iscontact import IsTrueContact
-from core.handlers import form
+from core.handlers import apsched, form
 from core.handlers.basic import (
     command_start,
     get_hello,
@@ -18,6 +20,7 @@ from core.handlers.basic import (
 )
 from core.handlers.callback import select_macbook
 from core.handlers.contact import get_fake_contact, get_true_contact
+from core.middlewares.apschedulermiddleware import SchedulerMiddleware
 from core.middlewares.countermiddleware import CounterMiddleware
 from core.middlewares.dbmiddleware import DbSession
 from core.middlewares.officehours import OfficeHoursMiddleware
@@ -52,9 +55,34 @@ async def main():
 
     pool_connect = await create_pool()
     dp = Dispatcher()
+    scheduler = AsyncIOScheduler(timezone="Europe/Moscow")
+    scheduler.add_job(
+        apsched.send_message_time,
+        trigger="date",
+        run_date=datetime.now() + timedelta(seconds=10),
+        kwargs={"bot": bot},
+    )
+    scheduler.add_job(
+        apsched.send_message_cron,
+        trigger="cron",
+        hour=datetime.now().hour,
+        minute=datetime.now().minute + 1,
+        start_date=datetime.now(),
+        kwargs={"bot": bot},
+    )
+    scheduler.add_job(
+        apsched.send_message_interval,
+        trigger="interval",
+        seconds=60,
+        kwargs={"bot": bot},
+    )
+    scheduler.start()
+
     dp.message.middleware.register(CounterMiddleware())
     dp.message.middleware.register(OfficeHoursMiddleware())
     dp.update.middleware.register(DbSession(pool_connect))
+    dp.update.middleware.register(SchedulerMiddleware(scheduler))
+
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
     dp.message.register(form.get_form, Command(commands="form"))
